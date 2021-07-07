@@ -258,18 +258,32 @@ message(STATUS "INSTALL_DIR: ${INSTALL_DIR}")
 # Need to explicitly enable ExternalProject functionality
 include(ExternalProject)
 
-# Download or update library as an external project
-ExternalProject_Add(project_spoa
-        GIT_REPOSITORY https://github.com/rvaser/spoa.git
-#        GIT_SUBMODULES vendor/bioparser vendor/cereal vendor/cpu_features vendor/simde
-#        DOWNLOAD_COMMAND ""
-#        UPDATE_COMMAND ""
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/external/spoa/ -DCMAKE_INSTALL_LIBDIR=${CMAKE_SOURCE_DIR}/external/spoa/lib
-        BUILD_IN_SOURCE True
-        INSTALL_DIR ${CMAKE_SOURCE_DIR}/external/spoa/
-        INSTALL_COMMAND make install
-        )
+if(${CMAKE_VERSION} VERSION_LESS "3.19.0")
+    # Download or update library as an external project
+    ExternalProject_Add(project_spoa
+            GIT_REPOSITORY https://github.com/rvaser/spoa.git
+            GIT_SUBMODULES vendor/bioparser vendor/cereal vendor/cpu_features vendor/simde
+            #        DOWNLOAD_COMMAND ""
+            #        UPDATE_COMMAND ""
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/
+            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/external/spoa/ -DCMAKE_INSTALL_LIBDIR=${CMAKE_SOURCE_DIR}/external/spoa/lib
+            BUILD_IN_SOURCE True
+            INSTALL_DIR ${CMAKE_SOURCE_DIR}/external/spoa/
+            INSTALL_COMMAND make install
+            )
+else()
+    # Download or update library as an external project
+    ExternalProject_Add(project_spoa
+            GIT_REPOSITORY https://github.com/rvaser/spoa.git
+            #        DOWNLOAD_COMMAND ""
+            #        UPDATE_COMMAND ""
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external/
+            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/external/spoa/ -DCMAKE_INSTALL_LIBDIR=${CMAKE_SOURCE_DIR}/external/spoa/lib
+            BUILD_IN_SOURCE True
+            INSTALL_DIR ${CMAKE_SOURCE_DIR}/external/spoa/
+            INSTALL_COMMAND make install
+            )
+endif()
 
 # Define INSTALL_DIR as the install directory for external library
 ExternalProject_Get_Property(project_spoa INSTALL_DIR)
